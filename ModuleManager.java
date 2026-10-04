@@ -10,9 +10,11 @@ public class ModuleManager {
     public static final FovModule FOV = new FovModule();
     public static final HudModule HUD = new HudModule();
     public static final CrosshairModule CROSSHAIR = new CrosshairModule();
+    public static final WatermarkModule WATERMARK = new WatermarkModule();
+    public static final CooldownsModule COOLDOWNS = new CooldownsModule();
 
     // To add a module: create a class extending Module and put it in this list.
-    private static final List<Module> MODULES = List.of(ZOOM, FOV, HUD, CROSSHAIR);
+    private static final List<Module> MODULES = List.of(WATERMARK, COOLDOWNS, ZOOM, FOV, HUD, CROSSHAIR);
 
     public static List<Module> all() { return MODULES; }
 
