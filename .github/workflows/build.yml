@@ -12,16 +12,17 @@ jobs:
 
       - name: Arrange files
         run: |
-          B=src/main/java/com/example/visuals
-          mkdir -p $B/gui $B/mixin $B/modules src/main/resources/assets/visuals/lang
-          mv_if() { [ -f "$1" ] && mv "$1" "$2/" || true; }
-          for f in VisualsClient.java Config.java; do mv_if $f $B; done
-          mv_if ClickGuiScreen.java $B/gui
-          for f in GameRendererMixin.java InGameHudMixin.java; do mv_if $f $B/mixin; done
-          for f in Module.java ModuleManager.java Setting.java ZoomModule.java FovModule.java HudModule.java CrosshairModule.java; do mv_if $f $B/modules; done
-          mv_if en_us.json src/main/resources/assets/visuals/lang
-          mv_if fabric.mod.json src/main/resources
-          mv_if visuals.mixins.json src/main/resources
+          mkdir -p src/main/resources/assets/visuals/lang
+          for f in *.java; do
+            [ -f "$f" ] || continue
+            pkg=$(grep -m1 '^package ' "$f" | sed 's/package //; s/;.*//' | tr -d '\r')
+            dir="src/main/java/$(echo "$pkg" | tr . /)"
+            mkdir -p "$dir"
+            mv "$f" "$dir/"
+          done
+          [ -f en_us.json ] && mv en_us.json src/main/resources/assets/visuals/lang/ || true
+          [ -f fabric.mod.json ] && mv fabric.mod.json src/main/resources/ || true
+          [ -f visuals.mixins.json ] && mv visuals.mixins.json src/main/resources/ || true
           ls -R src
 
       - uses: actions/setup-java@v4
