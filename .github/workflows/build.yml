@@ -1,0 +1,45 @@
+name: Build mod
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Arrange files
+        run: |
+          B=src/main/java/com/example/visuals
+          mkdir -p $B/gui $B/mixin $B/modules src/main/resources/assets/visuals/lang
+          mv_if() { [ -f "$1" ] && mv "$1" "$2/" || true; }
+          for f in VisualsClient.java Config.java; do mv_if $f $B; done
+          mv_if ClickGuiScreen.java $B/gui
+          for f in GameRendererMixin.java InGameHudMixin.java; do mv_if $f $B/mixin; done
+          for f in Module.java ModuleManager.java Setting.java ZoomModule.java FovModule.java HudModule.java CrosshairModule.java; do mv_if $f $B/modules; done
+          mv_if en_us.json src/main/resources/assets/visuals/lang
+          mv_if fabric.mod.json src/main/resources
+          mv_if visuals.mixins.json src/main/resources
+          ls -R src
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.12.1
+
+      - name: Build
+        run: gradle build --no-daemon
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: visuals-mod
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
