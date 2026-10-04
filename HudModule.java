@@ -1,0 +1,39 @@
+package com.example.visuals.modules;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HudModule extends Module {
+    public final Setting fps = add(Setting.bool("Show FPS", true));
+    public final Setting coords = add(Setting.bool("Show Coords", true));
+    public final Setting direction = add(Setting.bool("Show Direction", true));
+    public final Setting x = add(Setting.number("X", 6, 0, 500));
+    public final Setting y = add(Setting.number("Y", 6, 0, 300));
+    public final Setting scale = add(Setting.number("Scale", 1.0, 0.5, 2.5));
+
+    public HudModule() { super("HUD", "Small info overlay"); }
+
+    @Override
+    public void onHud(DrawContext ctx, MinecraftClient mc) {
+        List<String> lines = new ArrayList<>();
+        if (fps.asBool()) lines.add("FPS: " + mc.getCurrentFps());
+        if (coords.asBool()) {
+            lines.add(String.format("XYZ: %.1f / %.1f / %.1f", mc.player.getX(), mc.player.getY(), mc.player.getZ()));
+        }
+        if (direction.asBool()) lines.add("Facing: " + mc.player.getHorizontalFacing().asString());
+        if (lines.isEmpty()) return;
+
+        float s = (float) scale.value;
+        ctx.getMatrices().push();
+        ctx.getMatrices().scale(s, s, 1f);
+        int px = (int) (x.value / s), py = (int) (y.value / s);
+        for (String line : lines) {
+            ctx.drawTextWithShadow(mc.textRenderer, line, px, py, 0xFFFFFFFF);
+            py += 10;
+        }
+        ctx.getMatrices().pop();
+    }
+}

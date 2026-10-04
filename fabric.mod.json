@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "visuals",
+  "version": "1.0.0",
+  "name": "Visuals",
+  "description": "Cosmetic client modules with a toggle/settings GUI.",
+  "environment": "client",
+  "entrypoints": { "client": ["com.example.visuals.VisualsClient"] },
+  "mixins": ["visuals.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
