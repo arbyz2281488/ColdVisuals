@@ -5,6 +5,7 @@ import com.example.visuals.modules.ModuleManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -28,8 +29,13 @@ public class VisualsClient implements ClientModInitializer {
                 client.setScreen(new ClickGuiScreen());
             }
             ModuleManager.tick(client);
+            BindManager.tick(client);
+            CommandBinds.tick(client);
         });
 
         HudRenderCallback.EVENT.register((ctx, tickCounter) -> ModuleManager.hud(ctx));
+
+        // .config / .bind commands are handled locally and never sent to the server
+        ClientSendMessageEvents.ALLOW_CHAT.register(message -> !CommandHandler.handle(message));
     }
 }
