@@ -35,6 +35,8 @@ public class VisualsClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((ctx, tickCounter) -> ModuleManager.hud(ctx));
 
+        Hooks.register();
+
         // .config / .bind commands are handled locally and never sent to the server
         ClientSendMessageEvents.ALLOW_CHAT.register(message -> !CommandHandler.handle(message));
     }

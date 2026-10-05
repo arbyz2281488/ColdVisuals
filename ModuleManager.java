@@ -15,10 +15,28 @@ public class ModuleManager {
     public static final InventoryModule INVENTORY = new InventoryModule();
     public static final ArmorModule ARMOR = new ArmorModule();
     public static final GpsModule GPS = new GpsModule();
+    public static final TotemsModule TOTEMS = new TotemsModule();
+    public static final KeyStrokesModule KEYSTROKES = new KeyStrokesModule();
+    public static final KeyBindsHudModule KEYBINDS = new KeyBindsHudModule();
+    public static final TargetHudModule TARGET = new TargetHudModule();
+    public static final FriendsModule FRIENDS = new FriendsModule();
+    public static final SaturationModule SATURATION = new SaturationModule();
+    public static final ChatTimeModule CHATTIME = new ChatTimeModule();
+    public static final NameMentionModule MENTION = new NameMentionModule();
+    public static final DeathCordsModule DEATHCORDS = new DeathCordsModule();
+    public static final HitSoundsModule HITSOUNDS = new HitSoundsModule();
+    public static final HitParticlesModule HITPARTICLES = new HitParticlesModule();
+    public static final TrailsModule TRAILS = new TrailsModule();
+    public static final JumpCircleModule JUMPCIRCLE = new JumpCircleModule();
+    public static final WorldParticlesModule WORLDPARTICLES = new WorldParticlesModule();
+    public static final PearlParticlesModule PEARLPARTICLES = new PearlParticlesModule();
+    public static final AutoSprintModule AUTOSPRINT = new AutoSprintModule();
 
     // To add a module: create a class extending Module and put it in this list.
-    private static final List<Module> MODULES =
-            List.of(WATERMARK, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, ZOOM, FOV, CROSSHAIR);
+    private static final List<Module> MODULES = List.of(
+            WATERMARK, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES, KEYBINDS, TARGET,
+            FRIENDS, SATURATION, CHATTIME, MENTION, DEATHCORDS, HITSOUNDS, HITPARTICLES, TRAILS,
+            JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES, AUTOSPRINT, ZOOM, FOV, CROSSHAIR);
 
     public static List<Module> all() { return MODULES; }
 

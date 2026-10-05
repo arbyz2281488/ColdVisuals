@@ -36,6 +36,10 @@ public class CommandHandler {
             gps(a);
             return true;
         }
+        if (cmd.equals(".friend")) {
+            friend(a);
+            return true;
+        }
         return false;
     }
 
@@ -229,6 +233,36 @@ public class CommandHandler {
                 say("GPS отключён.");
             }
             default -> say("Неизвестная подкоманда. .gps set <X> <Z> | .gps off");
+        }
+    }
+
+    private static void friend(String[] a) {
+        if (a.length < 2) {
+            say(".friend add <ник> | remove <ник> | list");
+            return;
+        }
+        String sub = a[1].toLowerCase(Locale.ROOT);
+        switch (sub) {
+            case "add" -> {
+                if (a.length < 3 || !a[2].matches("[A-Za-z0-9_]{1,16}")) {
+                    say("Использование: .friend add <ник>");
+                    return;
+                }
+                say(FriendManager.add(a[2]) ? "Друг добавлен: " + a[2] : a[2] + " уже в списке.");
+            }
+            case "remove" -> {
+                if (a.length < 3) {
+                    say("Использование: .friend remove <ник>");
+                    return;
+                }
+                say(FriendManager.remove(a[2]) ? "Друг удалён: " + a[2] : a[2] + " нет в списке.");
+            }
+            case "list" -> {
+                var friends = FriendManager.all();
+                say(friends.isEmpty() ? "Список друзей пуст. Добавь: .friend add <ник>"
+                        : "Друзья: " + String.join(", ", friends));
+            }
+            default -> say("Неизвестная подкоманда. .friend add | remove | list");
         }
     }
 
