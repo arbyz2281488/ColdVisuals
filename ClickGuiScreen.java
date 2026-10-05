@@ -16,14 +16,17 @@ import java.util.Set;
 /**
  * Left click on a module = toggle. Right click = expand/collapse its settings.
  * Click or drag on a setting row to change it.
+ * HUD elements (highlighted with a frame) can be dragged with the mouse.
  */
 public class ClickGuiScreen extends Screen {
     private static final int X = 20, Y = 20, W = 160, ROW = 16;
+    private static final int FRAME = 0xFFB06CFF;
 
     private record Row(Module module, Setting setting, int y) {}
 
     private final Set<Module> expanded = new HashSet<>();
     private Setting dragging;
+    private Module draggingHud;
 
     public ClickGuiScreen() { super(Text.literal("Visuals")); }
 
@@ -51,6 +54,13 @@ public class ClickGuiScreen extends Screen {
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
         // No super.render(): avoids double background blur; we draw our own dim layer.
         ctx.fill(0, 0, width, height, 0x66000000);
+
+        // frames around draggable HUD elements
+        for (Module m : ModuleManager.all()) {
+            if (m.enabled && m.movable && m.boxW > 0) {
+                ctx.drawBorder(m.boxX - 2, m.boxY - 2, m.boxW + 4, m.boxH + 4, FRAME);
+            }
+        }
 
         ctx.fill(X, Y, X + W, Y + ROW, 0xFF111111);
         ctx.drawTextWithShadow(textRenderer, "Visuals", X + 5, Y + 4, 0xFFFFFFFF);
@@ -86,7 +96,9 @@ public class ClickGuiScreen extends Screen {
         if (tooltip != null) {
             ctx.drawTextWithShadow(textRenderer, tooltip, mouseX + 8, mouseY - 4, 0xFFFFFF55);
         }
-        ctx.drawTextWithShadow(textRenderer, "Esc / Right Shift to close", X, height - 14, 0xFF888888);
+        ctx.drawTextWithShadow(textRenderer, "Тяни элементы в рамке мышкой, чтобы переместить",
+                X, height - 26, 0xFFBBBBBB);
+        ctx.drawTextWithShadow(textRenderer, "Esc / Right Shift - закрыть", X, height - 14, 0xFF888888);
     }
 
     private void applySlider(Setting s, double mouseX) {
@@ -111,6 +123,17 @@ public class ClickGuiScreen extends Screen {
             }
             return true;
         }
+        // not on the panel: try to grab a HUD element (topmost = last in list)
+        if (button == 0) {
+            List<Module> mods = ModuleManager.all();
+            for (int i = mods.size() - 1; i >= 0; i--) {
+                Module m = mods.get(i);
+                if (m.enabled && m.hitBox(mouseX, mouseY)) {
+                    draggingHud = m;
+                    return true;
+                }
+            }
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -120,12 +143,17 @@ public class ClickGuiScreen extends Screen {
             applySlider(dragging, mouseX);
             return true;
         }
+        if (draggingHud != null) {
+            draggingHud.moveBy(dx, dy);
+            return true;
+        }
         return super.mouseDragged(mouseX, mouseY, button, dx, dy);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = null;
+        draggingHud = null;
         return super.mouseReleased(mouseX, mouseY, button);
     }
 

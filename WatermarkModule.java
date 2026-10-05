@@ -12,17 +12,19 @@ import java.util.List;
 
 public class WatermarkModule extends Module {
     /** Change this text to rename your visual. */
-    public static final String NAME = "ColdVisuals";
+    public static final String NAME = "ColdVisuals-beta";
 
     public final Setting server = add(Setting.bool("Show Server", true));
     public final Setting ping = add(Setting.bool("Show Ping", true));
     public final Setting fps = add(Setting.bool("Show FPS", true));
-    public final Setting y = add(Setting.number("Y", 4, 0, 200));
     public final Setting r = add(Setting.number("Red", 170, 0, 255));
     public final Setting g = add(Setting.number("Green", 90, 0, 255));
     public final Setting b = add(Setting.number("Blue", 255, 0, 255));
 
-    public WatermarkModule() { super("Watermark", "Floating pill with name, server, ping and FPS"); }
+    public WatermarkModule() {
+        super("Watermark", "Floating pill with name, server, ping and FPS (draggable)");
+        makeMovable(0, 4); // posX is an offset from the screen center
+    }
 
     @Override
     public void onHud(DrawContext ctx, MinecraftClient mc) {
@@ -44,10 +46,13 @@ public class WatermarkModule extends Module {
         int sepW = sepGap * 2 + tr.getWidth("|");
         int w = pad + dot + 4 + tr.getWidth(NAME) + pad;
         for (String p : parts) w += sepW + tr.getWidth(p);
-
         int h = 16;
-        int x = (ctx.getScaledWindowWidth() - w) / 2;
-        int yy = y.asInt();
+
+        int base = (ctx.getScaledWindowWidth() - w) / 2;
+        int x = (int) Math.max(0, Math.min(base + posX, ctx.getScaledWindowWidth() - w));
+        posX = x - base;
+        int yy = clampY(ctx, h);
+        setBox(x, yy, w, h);
 
         RenderUtil.roundedRect(ctx, x, yy, w, h, 8, 0xB0101018);
         RenderUtil.roundedRect(ctx, x + pad, yy + 5, dot, dot, 3, accent);

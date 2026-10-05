@@ -12,6 +12,12 @@ public abstract class Module {
     public boolean enabled;
     public final List<Setting> settings = new ArrayList<>();
 
+    // --- draggable HUD support ---
+    public boolean movable;
+    public double posX, posY;
+    /** Last drawn rectangle on screen (used by the GUI for dragging). */
+    public int boxX, boxY, boxW, boxH;
+
     protected Module(String name, String description) {
         this.name = name;
         this.description = description;
@@ -20,6 +26,36 @@ public abstract class Module {
     protected Setting add(Setting s) {
         settings.add(s);
         return s;
+    }
+
+    protected void makeMovable(double defX, double defY) {
+        movable = true;
+        posX = defX;
+        posY = defY;
+    }
+
+    protected void setBox(int x, int y, int w, int h) {
+        boxX = x; boxY = y; boxW = w; boxH = h;
+    }
+
+    /** Keeps the element on screen and returns its X. */
+    protected int clampX(DrawContext ctx, int w) {
+        posX = Math.max(0, Math.min(posX, ctx.getScaledWindowWidth() - w));
+        return (int) posX;
+    }
+
+    protected int clampY(DrawContext ctx, int h) {
+        posY = Math.max(0, Math.min(posY, ctx.getScaledWindowHeight() - h));
+        return (int) posY;
+    }
+
+    public void moveBy(double dx, double dy) {
+        posX += dx;
+        posY += dy;
+    }
+
+    public boolean hitBox(double mx, double my) {
+        return movable && boxW > 0 && mx >= boxX && mx < boxX + boxW && my >= boxY && my < boxY + boxH;
     }
 
     public void toggle() { enabled = !enabled; }

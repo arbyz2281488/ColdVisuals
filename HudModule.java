@@ -1,6 +1,7 @@
 package com.example.visuals.modules;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
@@ -10,11 +11,12 @@ public class HudModule extends Module {
     public final Setting fps = add(Setting.bool("Show FPS", true));
     public final Setting coords = add(Setting.bool("Show Coords", true));
     public final Setting direction = add(Setting.bool("Show Direction", true));
-    public final Setting x = add(Setting.number("X", 6, 0, 500));
-    public final Setting y = add(Setting.number("Y", 6, 0, 300));
     public final Setting scale = add(Setting.number("Scale", 1.0, 0.5, 2.5));
 
-    public HudModule() { super("HUD", "Small info overlay"); }
+    public HudModule() {
+        super("HUD", "Small info overlay (draggable)");
+        makeMovable(6, 26);
+    }
 
     @Override
     public void onHud(DrawContext ctx, MinecraftClient mc) {
@@ -26,13 +28,21 @@ public class HudModule extends Module {
         if (direction.asBool()) lines.add("Facing: " + mc.player.getHorizontalFacing().asString());
         if (lines.isEmpty()) return;
 
+        TextRenderer tr = mc.textRenderer;
         float s = (float) scale.value;
+        int maxW = 0;
+        for (String l : lines) maxW = Math.max(maxW, tr.getWidth(l));
+        int w = Math.round(maxW * s) + 2;
+        int h = Math.round(lines.size() * 10 * s);
+        int px = clampX(ctx, w), py = clampY(ctx, h);
+        setBox(px, py, w, h);
+
         ctx.getMatrices().push();
         ctx.getMatrices().scale(s, s, 1f);
-        int px = (int) (x.value / s), py = (int) (y.value / s);
+        int tx = Math.round(px / s), ty = Math.round(py / s);
         for (String line : lines) {
-            ctx.drawTextWithShadow(mc.textRenderer, line, px, py, 0xFFFFFFFF);
-            py += 10;
+            ctx.drawTextWithShadow(tr, line, tx, ty, 0xFFFFFFFF);
+            ty += 10;
         }
         ctx.getMatrices().pop();
     }

@@ -17,15 +17,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Side panel: active potion effects and item cooldowns (ender pearl, chorus fruit,
- * server-plugin cooldowns shown on items, etc.) with the time left.
+ * Panel: active potion effects and item cooldowns with the time left (draggable).
  * Only cooldowns that the game shows on the item itself can be read.
  */
 public class CooldownsModule extends Module {
     public final Setting effects = add(Setting.bool("Show Effects", true));
     public final Setting cooldowns = add(Setting.bool("Show Cooldowns", true));
-    public final Setting x = add(Setting.number("X", 6, 0, 500));
-    public final Setting y = add(Setting.number("Y", 80, 0, 400));
 
     private static final int ACCENT = 0xFFB06CFF;
 
@@ -39,7 +36,10 @@ public class CooldownsModule extends Module {
 
     private final Map<Item, Track> tracks = new HashMap<>();
 
-    public CooldownsModule() { super("Cooldowns", "Panel with effects and cooldowns and time left"); }
+    public CooldownsModule() {
+        super("Cooldowns", "Panel with effects and cooldowns and time left (draggable)");
+        makeMovable(6, 80);
+    }
 
     @Override
     public void onTick(MinecraftClient mc) {
@@ -70,7 +70,6 @@ public class CooldownsModule extends Module {
                 t.last = p;
                 tracks.put(item, t);
             } else {
-                // progress drops by 1/total every tick -> total duration in ticks
                 if (t.totalTicks <= 0 && t.last - p > 0.0001f) t.totalTicks = 1f / (t.last - p);
                 t.last = p;
             }
@@ -117,7 +116,8 @@ public class CooldownsModule extends Module {
         for (Line l : lines) w = Math.max(w, tr.getWidth(l.left()) + tr.getWidth(l.right()) + 28);
         int rowH = 11;
         int h = lines.size() * rowH + 8;
-        int px = x.asInt(), py = y.asInt();
+        int px = clampX(ctx, w), py = clampY(ctx, h);
+        setBox(px, py, w, h);
 
         RenderUtil.roundedRect(ctx, px, py, w, h, 4, 0xB0101018);
         int ty = py + 5;
