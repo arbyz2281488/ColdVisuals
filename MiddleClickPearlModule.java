@@ -50,7 +50,7 @@ public class MiddleClickPearlModule extends Module {
         return switch (mode.asInt()) {
             case 1 -> Items.ENDER_PEARL;
             case 2 -> Items.FIREWORK_ROCKET;
-            default -> mc.player.isFallFlying() ? Items.FIREWORK_ROCKET : Items.ENDER_PEARL;
+            default -> mc.player.isGliding() ? Items.FIREWORK_ROCKET : Items.ENDER_PEARL;
         };
     }
 
@@ -70,7 +70,7 @@ public class MiddleClickPearlModule extends Module {
     public void use(MinecraftClient mc, Item wanted) {
         if (mc.player == null || mc.interactionManager == null) return;
         // fireworks on the ground need a block to be placed on; while gliding they just boost
-        boolean tryBlock = wanted == Items.FIREWORK_ROCKET && !mc.player.isFallFlying();
+        boolean tryBlock = wanted == Items.FIREWORK_ROCKET && !mc.player.isGliding();
 
         ItemStack off = mc.player.getOffHandStack();
         if (off.isOf(wanted)) {
