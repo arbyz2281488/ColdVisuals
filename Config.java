@@ -79,6 +79,8 @@ public class Config {
         for (Module m : ModuleManager.all()) {
             p.setProperty(m.name + ".enabled", String.valueOf(m.enabled));
             for (Setting s : m.settings) p.setProperty(m.name + "." + s.name, String.valueOf(s.value));
+            if (m.hasActionKey) p.setProperty(m.name + ".actionKey", String.valueOf(m.actionKey));
+            if (m.hasActionKey2) p.setProperty(m.name + ".actionKey2", String.valueOf(m.actionKey2));
             if (m.movable) {
                 p.setProperty(m.name + ".posX", String.valueOf(m.posX));
                 p.setProperty(m.name + ".posY", String.valueOf(m.posY));
@@ -105,6 +107,16 @@ public class Config {
             for (Setting s : m.settings) {
                 try {
                     s.value = Double.parseDouble(p.getProperty(m.name + "." + s.name, String.valueOf(s.value)));
+                } catch (NumberFormatException ignored) {}
+            }
+            if (m.hasActionKey) {
+                try {
+                    m.actionKey = Integer.parseInt(p.getProperty(m.name + ".actionKey", String.valueOf(m.actionKey)));
+                } catch (NumberFormatException ignored) {}
+            }
+            if (m.hasActionKey2) {
+                try {
+                    m.actionKey2 = Integer.parseInt(p.getProperty(m.name + ".actionKey2", String.valueOf(m.actionKey2)));
                 } catch (NumberFormatException ignored) {}
             }
             if (m.movable) {

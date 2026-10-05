@@ -3,6 +3,7 @@ package com.example.visuals;
 import com.example.visuals.modules.Module;
 import com.example.visuals.modules.ModuleManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
 import java.io.IOException;
@@ -38,6 +39,22 @@ public class CommandHandler {
         }
         if (cmd.equals(".friend")) {
             friend(a);
+            return true;
+        }
+        if (cmd.equals(".cold")) {
+            cold(a);
+            return true;
+        }
+        if (cmd.equals(".pearl")) {
+            ModuleManager.PEARL.use(MinecraftClient.getInstance(), Items.ENDER_PEARL);
+            return true;
+        }
+        if (cmd.equals(".firework")) {
+            ModuleManager.PEARL.use(MinecraftClient.getInstance(), Items.FIREWORK_ROCKET);
+            return true;
+        }
+        if (cmd.equals(".elytraswap")) {
+            ModuleManager.ELYTRASWAP.run(MinecraftClient.getInstance());
             return true;
         }
         return false;
@@ -263,6 +280,31 @@ public class CommandHandler {
                         : "Друзья: " + String.join(", ", friends));
             }
             default -> say("Неизвестная подкоманда. .friend add | remove | list");
+        }
+    }
+
+    private static void cold(String[] a) {
+        if (a.length < 2) {
+            say(".cold url <адрес> | list");
+            return;
+        }
+        String sub = a[1].toLowerCase(Locale.ROOT);
+        switch (sub) {
+            case "url" -> {
+                if (a.length < 3) {
+                    String u = ColdNet.url();
+                    say(u.isEmpty() ? "Адрес сервера не задан. .cold url https://..." : "Адрес: " + u);
+                    return;
+                }
+                ColdNet.setUrl(a[2]);
+                say(ColdNet.url().isEmpty() ? "Адрес должен начинаться с https://" : "Адрес сохранён: " + ColdNet.url());
+            }
+            case "list" -> {
+                var users = ColdNet.users();
+                say(users.isEmpty() ? "Других пользователей Cold на этом сервере пока не найдено."
+                        : "Пользователи Cold онлайн: " + String.join(", ", users));
+            }
+            default -> say("Неизвестная подкоманда. .cold url <адрес> | list");
         }
     }
 

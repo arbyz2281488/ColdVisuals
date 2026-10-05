@@ -2,6 +2,7 @@ package com.example.visuals.modules;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.InputUtil;
 
 import java.util.List;
 
@@ -31,12 +32,16 @@ public class ModuleManager {
     public static final WorldParticlesModule WORLDPARTICLES = new WorldParticlesModule();
     public static final PearlParticlesModule PEARLPARTICLES = new PearlParticlesModule();
     public static final AutoSprintModule AUTOSPRINT = new AutoSprintModule();
+    public static final MiddleClickPearlModule PEARL = new MiddleClickPearlModule();
+    public static final ElytraSwapModule ELYTRASWAP = new ElytraSwapModule();
+    public static final ColdTagModule COLDTAG = new ColdTagModule();
 
     // To add a module: create a class extending Module and put it in this list.
     private static final List<Module> MODULES = List.of(
             WATERMARK, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES, KEYBINDS, TARGET,
             FRIENDS, SATURATION, CHATTIME, MENTION, DEATHCORDS, HITSOUNDS, HITPARTICLES, TRAILS,
-            JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES, AUTOSPRINT, ZOOM, FOV, CROSSHAIR);
+            JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES, AUTOSPRINT, PEARL, ELYTRASWAP, COLDTAG,
+            ZOOM, FOV, CROSSHAIR);
 
     public static List<Module> all() { return MODULES; }
 
@@ -47,6 +52,26 @@ public class ModuleManager {
 
     public static void tick(MinecraftClient mc) {
         for (Module m : MODULES) m.onTick(mc);
+
+        if (mc.getWindow() == null) return;
+        long handle = mc.getWindow().getHandle();
+        for (Module m : MODULES) {
+            boolean ready = m.enabled && mc.currentScreen == null && mc.player != null;
+            if (m.hasActionKey && m.actionKey >= 0) {
+                boolean down = InputUtil.isKeyPressed(handle, m.actionKey);
+                if (down && !m.actionWasDown && ready) m.onActionKey(mc);
+                m.actionWasDown = down;
+            } else {
+                m.actionWasDown = false;
+            }
+            if (m.hasActionKey2 && m.actionKey2 >= 0) {
+                boolean down2 = InputUtil.isKeyPressed(handle, m.actionKey2);
+                if (down2 && !m.action2WasDown && ready) m.onActionKey2(mc);
+                m.action2WasDown = down2;
+            } else {
+                m.action2WasDown = false;
+            }
+        }
     }
 
     public static void hud(DrawContext ctx) {

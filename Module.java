@@ -18,6 +18,35 @@ public abstract class Module {
     /** Last drawn rectangle on screen (used by the GUI for dragging). */
     public int boxX, boxY, boxW, boxH;
 
+    // --- optional action key: a key bound in the GUI that triggers this module's action ---
+    public boolean hasActionKey;
+    public int actionKey = -1;
+    public boolean actionWasDown;
+    public String actionLabel = "Key";
+
+    public boolean hasActionKey2;
+    public int actionKey2 = -1;
+    public boolean action2WasDown;
+    public String action2Label = "Key 2";
+
+    protected void enableActionKey() { hasActionKey = true; }
+
+    protected void enableActionKey(String label) {
+        hasActionKey = true;
+        actionLabel = label;
+    }
+
+    protected void enableActionKey2(String label) {
+        hasActionKey2 = true;
+        action2Label = label;
+    }
+
+    /** Called when the first action key is pressed (only while the module is enabled). */
+    public void onActionKey(MinecraftClient mc) {}
+
+    /** Called when the second action key is pressed (only while the module is enabled). */
+    public void onActionKey2(MinecraftClient mc) {}
+
     protected Module(String name, String description) {
         this.name = name;
         this.description = description;
