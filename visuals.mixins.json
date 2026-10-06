@@ -2,6 +2,18 @@
   "required": true,
   "package": "com.example.visuals.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": ["GameRendererMixin", "InGameHudMixin", "PlayerEntityMixin", "PlayerListHudMixin", "LivingEntityAccessor"],
+  "client": [
+    "GameRendererMixin",
+    "InGameHudMixin",
+    "PlayerEntityMixin",
+    "PlayerListHudMixin",
+    "LivingEntityAccessor",
+    "InGameOverlayRendererMixin",
+    "HeldItemRendererMixin",
+    "LivingEntityRendererMixin",
+    "EntityMixin",
+    "CameraMixin",
+    "HandledScreenAccessor"
+  ],
   "injectors": { "defaultRequire": 1 }
 }

@@ -50,6 +50,19 @@ public class ModuleManager {
     public static final TargetEspModule TARGETESP = new TargetEspModule();
     public static final ItemSwapModule ITEMSWAP = new ItemSwapModule();
     public static final NoJumpDelayModule NOJUMPDELAY = new NoJumpDelayModule();
+    public static final RemovalsModule REMOVALS = new RemovalsModule();
+    public static final NoFluidModule NOFLUID = new NoFluidModule();
+    public static final BlockViewModule BLOCKVIEW = new BlockViewModule();
+    public static final ScreenStretchModule STRETCH = new ScreenStretchModule();
+    public static final ViewModelModule VIEWMODEL = new ViewModelModule();
+    public static final SeeOwnNameModule SEEOWNNAME = new SeeOwnNameModule();
+    public static final DamageNumbersModule DAMAGENUMBERS = new DamageNumbersModule();
+    public static final KillEffectsModule KILLEFFECTS = new KillEffectsModule();
+    public static final SmoothScreensModule SMOOTH = new SmoothScreensModule();
+    public static final FullTabListModule FULLTAB = new FullTabListModule();
+    public static final FreeLookModule FREELOOK = new FreeLookModule();
+    public static final ChinaHatModule CHINAHAT = new ChinaHatModule();
+    public static final ItemColorModule ITEMCOLOR = new ItemColorModule();
 
     // To add a module: create a class extending Module and put it in this list.
     private static final List<Module> MODULES = List.of(
@@ -58,6 +71,8 @@ public class ModuleManager {
             JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES, AUTOSPRINT, PEARL, ELYTRASWAP, COLDTAG,
             TNTTIMER, TIMECHANGER, HITBOXES, SLOTLOCK, FRIENDSAVE, ANTISPAM, NAMEPROTECT, AUTOCOMMAND,
             GAMMA, TARGETESP, ITEMSWAP, NOJUMPDELAY,
+            REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, SMOOTH,
+            FULLTAB, FREELOOK, CHINAHAT, ITEMCOLOR,
             ZOOM, FOV, CROSSHAIR);
 
     private static void cat(String category, Module... mods) {
@@ -66,11 +81,12 @@ public class ModuleManager {
 
     static {
         cat("Interface", WATERMARK, ISLAND, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES,
-                KEYBINDS, TARGET, FRIENDS, SATURATION, TNTTIMER);
+                KEYBINDS, TARGET, FRIENDS, SATURATION, TNTTIMER, SMOOTH, FULLTAB, ITEMCOLOR);
         cat("Helper", AUTOSPRINT, PEARL, ELYTRASWAP, ITEMSWAP, NOJUMPDELAY, AUTOCOMMAND, SLOTLOCK,
                 FRIENDSAVE, ANTISPAM);
         cat("Visuals", SCREENTINT, HURTFLASH, TRAILS, JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES,
-                HITPARTICLES, TARGETESP, GAMMA, TIMECHANGER, HITBOXES, ZOOM, FOV, CROSSHAIR);
+                HITPARTICLES, TARGETESP, GAMMA, TIMECHANGER, HITBOXES, ZOOM, FOV, CROSSHAIR,
+                REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, FREELOOK, CHINAHAT);
         cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME);
     }
 

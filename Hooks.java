@@ -1,11 +1,15 @@
 package com.example.visuals;
 
+import com.example.visuals.gui.ClickGuiScreen;
 import com.example.visuals.modules.ChatTimeModule;
 import com.example.visuals.modules.ModuleManager;
 import com.example.visuals.modules.NameMentionModule;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +28,16 @@ public class Hooks {
     public static void register() {
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> overlay || ModuleManager.ANTISPAM.allow(message));
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> overlay ? message : onChat(message));
+
+        ScreenEvents.AFTER_INIT.register((client, screen, w, h) -> {
+            if (screen instanceof ClickGuiScreen || screen instanceof ChatScreen) return;
+            if (!ModuleManager.SMOOTH.opened(screen)) return; // already hooked (screen was just resized)
+            if (screen instanceof HandledScreen<?>) {
+                ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.ITEMCOLOR.render(s, ctx));
+            }
+            ScreenEvents.beforeRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.begin(ctx, s));
+            ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.end(ctx));
+        });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (world.isClient()) {
