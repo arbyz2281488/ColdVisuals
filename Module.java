@@ -12,6 +12,11 @@ public abstract class Module {
     public boolean enabled;
     public final List<Setting> settings = new ArrayList<>();
 
+    /** GUI category: Interface, Helper, Visuals or Other. */
+    public String category = "Other";
+    /** Animation state for the GUI switch (0..1). */
+    public float anim;
+
     // --- draggable HUD support ---
     public boolean movable;
     public double posX, posY;

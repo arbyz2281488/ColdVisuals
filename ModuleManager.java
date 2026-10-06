@@ -35,13 +35,44 @@ public class ModuleManager {
     public static final MiddleClickPearlModule PEARL = new MiddleClickPearlModule();
     public static final ElytraSwapModule ELYTRASWAP = new ElytraSwapModule();
     public static final ColdTagModule COLDTAG = new ColdTagModule();
+    public static final ScreenTintModule SCREENTINT = new ScreenTintModule();
+    public static final HurtFlashModule HURTFLASH = new HurtFlashModule();
+    public static final IslandModule ISLAND = new IslandModule();
+    public static final TntTimerModule TNTTIMER = new TntTimerModule();
+    public static final TimeChangerModule TIMECHANGER = new TimeChangerModule();
+    public static final HitboxesModule HITBOXES = new HitboxesModule();
+    public static final SlotLockModule SLOTLOCK = new SlotLockModule();
+    public static final FriendSaveModule FRIENDSAVE = new FriendSaveModule();
+    public static final AntiSpamModule ANTISPAM = new AntiSpamModule();
+    public static final NameProtectModule NAMEPROTECT = new NameProtectModule();
+    public static final AutoCommandModule AUTOCOMMAND = new AutoCommandModule();
+    public static final GammaModule GAMMA = new GammaModule();
+    public static final TargetEspModule TARGETESP = new TargetEspModule();
+    public static final ItemSwapModule ITEMSWAP = new ItemSwapModule();
+    public static final NoJumpDelayModule NOJUMPDELAY = new NoJumpDelayModule();
 
     // To add a module: create a class extending Module and put it in this list.
     private static final List<Module> MODULES = List.of(
-            WATERMARK, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES, KEYBINDS, TARGET,
+            SCREENTINT, HURTFLASH, WATERMARK, ISLAND, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES, KEYBINDS, TARGET,
             FRIENDS, SATURATION, CHATTIME, MENTION, DEATHCORDS, HITSOUNDS, HITPARTICLES, TRAILS,
             JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES, AUTOSPRINT, PEARL, ELYTRASWAP, COLDTAG,
+            TNTTIMER, TIMECHANGER, HITBOXES, SLOTLOCK, FRIENDSAVE, ANTISPAM, NAMEPROTECT, AUTOCOMMAND,
+            GAMMA, TARGETESP, ITEMSWAP, NOJUMPDELAY,
             ZOOM, FOV, CROSSHAIR);
+
+    private static void cat(String category, Module... mods) {
+        for (Module m : mods) m.category = category;
+    }
+
+    static {
+        cat("Interface", WATERMARK, ISLAND, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES,
+                KEYBINDS, TARGET, FRIENDS, SATURATION, TNTTIMER);
+        cat("Helper", AUTOSPRINT, PEARL, ELYTRASWAP, ITEMSWAP, NOJUMPDELAY, AUTOCOMMAND, SLOTLOCK,
+                FRIENDSAVE, ANTISPAM);
+        cat("Visuals", SCREENTINT, HURTFLASH, TRAILS, JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES,
+                HITPARTICLES, TARGETESP, GAMMA, TIMECHANGER, HITBOXES, ZOOM, FOV, CROSSHAIR);
+        cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME);
+    }
 
     public static List<Module> all() { return MODULES; }
 

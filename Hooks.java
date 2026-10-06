@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -15,13 +16,23 @@ import net.minecraft.util.Formatting;
 
 import java.util.Locale;
 
-/** Event hooks: incoming chat (ChatTime, NameMention) and attacks (HitSounds, HitParticles). */
+/**
+ * Event hooks: incoming chat (AntiSpam, NameMention, NameProtect, ChatTime)
+ * and your attacks (FriendSave, HitSounds, HitParticles).
+ */
 public class Hooks {
     public static void register() {
+        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> overlay || ModuleManager.ANTISPAM.allow(message));
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> overlay ? message : onChat(message));
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (world.isClient()) onAttack(entity);
+            if (world.isClient()) {
+                if (ModuleManager.FRIENDSAVE.enabled && entity instanceof PlayerEntity p
+                        && FriendManager.isFriend(p.getName().getString())) {
+                    return ActionResult.FAIL;
+                }
+                onAttack(entity);
+            }
             return ActionResult.PASS;
         });
     }
@@ -44,8 +55,11 @@ public class Hooks {
                     mc.getSoundManager().play(
                             PositionedSoundInstance.master(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f));
                 }
+                ModuleManager.ISLAND.push("Тебя упомянули в чате");
             }
         }
+
+        result = ModuleManager.NAMEPROTECT.apply(result);
 
         ChatTimeModule time = ModuleManager.CHATTIME;
         if (time.enabled) {
@@ -57,5 +71,6 @@ public class Hooks {
     private static void onAttack(Entity target) {
         ModuleManager.HITSOUNDS.play();
         ModuleManager.HITPARTICLES.spawn(target);
+        ModuleManager.TARGETESP.setTarget(target);
     }
 }

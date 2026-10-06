@@ -41,6 +41,14 @@ public class CommandHandler {
             friend(a);
             return true;
         }
+        if (cmd.equals(".lockslot")) {
+            ModuleManager.SLOTLOCK.toggleCurrent(MinecraftClient.getInstance());
+            return true;
+        }
+        if (cmd.equals(".autocmd")) {
+            autocmd(a);
+            return true;
+        }
         if (cmd.equals(".cold")) {
             cold(a);
             return true;
@@ -306,6 +314,17 @@ public class CommandHandler {
             }
             default -> say("Неизвестная подкоманда. .cold url <адрес> | list");
         }
+    }
+
+    private static void autocmd(String[] a) {
+        if (a.length < 2) {
+            String c = ModuleManager.AUTOCOMMAND.command();
+            say(c.isEmpty() ? "Команда не задана. Пример: .autocmd /heal" : "Автокоманда: " + c);
+            return;
+        }
+        String c = String.join(" ", Arrays.copyOfRange(a, 1, a.length));
+        ModuleManager.AUTOCOMMAND.setCommand(c);
+        say("Автокоманда: " + c + "  (включить и задать интервал - в GUI, модуль AutoCommand)");
     }
 
     private static String moduleNames() {

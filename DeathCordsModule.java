@@ -5,7 +5,7 @@ import net.minecraft.text.Text;
 
 import java.util.Locale;
 
-/** Prints your death coordinates to your own chat window (only you see it). */
+/** Prints your death coordinates to your own chat window (only you see it) and on the Island. */
 public class DeathCordsModule extends Module {
     private boolean wasDead;
 
@@ -17,9 +17,10 @@ public class DeathCordsModule extends Module {
         boolean dead = mc.player.isDead();
         if (enabled && dead && !wasDead) {
             String dim = mc.world.getRegistryKey().getValue().getPath();
+            int x = mc.player.getBlockX(), y = mc.player.getBlockY(), z = mc.player.getBlockZ();
             mc.player.sendMessage(Text.literal(String.format(Locale.ROOT,
-                    "§c[Смерть] §fX %d  Y %d  Z %d  (%s)",
-                    mc.player.getBlockX(), mc.player.getBlockY(), mc.player.getBlockZ(), dim)), false);
+                    "§c[Смерть] §fX %d  Y %d  Z %d  (%s)", x, y, z, dim)), false);
+            ModuleManager.ISLAND.push(String.format(Locale.ROOT, "Смерть: %d %d %d", x, y, z));
         }
         wasDead = dead;
     }

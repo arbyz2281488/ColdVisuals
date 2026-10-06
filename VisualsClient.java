@@ -24,6 +24,8 @@ public class VisualsClient implements ClientModInitializer {
         zoomKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.visuals.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "category.visuals"));
 
+        ClientTickEvents.START_CLIENT_TICK.register(client -> ModuleManager.SLOTLOCK.beforeInput(client));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openGuiKey.wasPressed()) {
                 client.setScreen(new ClickGuiScreen());

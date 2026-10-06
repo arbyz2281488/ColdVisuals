@@ -7,6 +7,8 @@ public class Setting {
     public final Type type;
     public double value;
     public final double min, max;
+    /** Animation state for the GUI switch (0..1). */
+    public float anim;
 
     private Setting(String name, Type type, double def, double min, double max) {
         this.name = name; this.type = type; this.value = def; this.min = min; this.max = max;

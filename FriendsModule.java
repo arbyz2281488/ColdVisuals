@@ -22,6 +22,30 @@ public class FriendsModule extends Module {
         makeMovable(6, 440);
     }
 
+    private Set<String> prev = null;
+
+    @Override
+    public void onTick(MinecraftClient mc) {
+        if (!enabled || mc.getNetworkHandler() == null || mc.player == null) {
+            prev = null;
+            return;
+        }
+        if (mc.player.age % 20 != 0) return;
+        Set<String> now = new HashSet<>();
+        for (PlayerListEntry e : mc.getNetworkHandler().getPlayerList()) {
+            now.add(e.getProfile().getName().toLowerCase(Locale.ROOT));
+        }
+        if (prev != null) {
+            for (String f : FriendManager.all()) {
+                String k = f.toLowerCase(Locale.ROOT);
+                boolean was = prev.contains(k), is = now.contains(k);
+                if (is && !was) ModuleManager.ISLAND.push("Друг в сети: " + f);
+                else if (!is && was) ModuleManager.ISLAND.push("Друг вышел: " + f);
+            }
+        }
+        prev = now;
+    }
+
     @Override
     public void onHud(DrawContext ctx, MinecraftClient mc) {
         Set<String> friends = FriendManager.all();

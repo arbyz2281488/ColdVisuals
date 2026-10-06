@@ -36,7 +36,7 @@ public class CommandBinds {
         }
     }
 
-    private static void run(MinecraftClient mc, String cmd) {
+    public static void run(MinecraftClient mc, String cmd) {
         if (cmd.startsWith(".")) { // our own mod command, e.g. ".config load pvp"
             CommandHandler.handle(cmd);
             return;
