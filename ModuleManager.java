@@ -71,6 +71,7 @@ public class ModuleManager {
     public static final FriendMarkersModule FRIENDMARKERS = new FriendMarkersModule();
     public static final HitBubblesModule HITBUBBLES = new HitBubblesModule();
     public static final SoundsModule SOUNDS = new SoundsModule();
+    public static final MenuStyleModule MENUSTYLE = new MenuStyleModule();
 
     // To add a module: create a class extending Module and put it in this list.
     private static final List<Module> MODULES = List.of(
@@ -81,7 +82,7 @@ public class ModuleManager {
             GAMMA, TARGETESP, ITEMSWAP, NOJUMPDELAY,
             REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, SMOOTH,
             FULLTAB, FREELOOK, CHINAHAT, ITEMCOLOR, CUSTOMFOG, SKYCOLOR, BABYLOL,
-            SCOREBOARD, SMOOTHCHAT, FRIENDMARKERS, HITBUBBLES, SOUNDS,
+            SCOREBOARD, SMOOTHCHAT, FRIENDMARKERS, HITBUBBLES, SOUNDS, MENUSTYLE,
             ZOOM, FOV, CROSSHAIR);
 
     private static void cat(String category, Module... mods) {
@@ -96,7 +97,7 @@ public class ModuleManager {
         cat("Visuals", SCREENTINT, HURTFLASH, TRAILS, JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES,
                 HITPARTICLES, TARGETESP, GAMMA, TIMECHANGER, HITBOXES, ZOOM, FOV, CROSSHAIR,
                 REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, FREELOOK, CHINAHAT, CUSTOMFOG, SKYCOLOR, BABYLOL, HITBUBBLES);
-        cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME, SOUNDS);
+        cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME, SOUNDS, MENUSTYLE);
     }
 
     public static List<Module> all() { return MODULES; }
