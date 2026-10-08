@@ -13,7 +13,10 @@
     "LivingEntityRendererMixin",
     "EntityMixin",
     "CameraMixin",
-    "HandledScreenAccessor"
+    "HandledScreenAccessor",
+    "BackgroundRendererMixin",
+    "ClientWorldMixin",
+    "ChatHudMixin"
   ],
   "injectors": { "defaultRequire": 1 }
 }

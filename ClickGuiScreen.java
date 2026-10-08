@@ -559,6 +559,7 @@ public class ClickGuiScreen extends Screen {
             for (Item it : items) {
                 int ix = cx + it.x(), iy = cy + it.y() - scroll;
                 if (!inside(mx, my, ix, iy, it.w(), it.h())) continue;
+                ModuleManager.SOUNDS.click();
                 Module m = it.m();
                 switch (it.kind()) {
                     case CARD -> {

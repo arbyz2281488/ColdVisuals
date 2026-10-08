@@ -63,6 +63,14 @@ public class ModuleManager {
     public static final FreeLookModule FREELOOK = new FreeLookModule();
     public static final ChinaHatModule CHINAHAT = new ChinaHatModule();
     public static final ItemColorModule ITEMCOLOR = new ItemColorModule();
+    public static final CustomFogModule CUSTOMFOG = new CustomFogModule();
+    public static final SkyColorModule SKYCOLOR = new SkyColorModule();
+    public static final BabyLolModule BABYLOL = new BabyLolModule();
+    public static final ScoreboardHudModule SCOREBOARD = new ScoreboardHudModule();
+    public static final SmoothChatModule SMOOTHCHAT = new SmoothChatModule();
+    public static final FriendMarkersModule FRIENDMARKERS = new FriendMarkersModule();
+    public static final HitBubblesModule HITBUBBLES = new HitBubblesModule();
+    public static final SoundsModule SOUNDS = new SoundsModule();
 
     // To add a module: create a class extending Module and put it in this list.
     private static final List<Module> MODULES = List.of(
@@ -72,7 +80,8 @@ public class ModuleManager {
             TNTTIMER, TIMECHANGER, HITBOXES, SLOTLOCK, FRIENDSAVE, ANTISPAM, NAMEPROTECT, AUTOCOMMAND,
             GAMMA, TARGETESP, ITEMSWAP, NOJUMPDELAY,
             REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, SMOOTH,
-            FULLTAB, FREELOOK, CHINAHAT, ITEMCOLOR,
+            FULLTAB, FREELOOK, CHINAHAT, ITEMCOLOR, CUSTOMFOG, SKYCOLOR, BABYLOL,
+            SCOREBOARD, SMOOTHCHAT, FRIENDMARKERS, HITBUBBLES, SOUNDS,
             ZOOM, FOV, CROSSHAIR);
 
     private static void cat(String category, Module... mods) {
@@ -81,13 +90,13 @@ public class ModuleManager {
 
     static {
         cat("Interface", WATERMARK, ISLAND, GPS, COOLDOWNS, INVENTORY, ARMOR, HUD, TOTEMS, KEYSTROKES,
-                KEYBINDS, TARGET, FRIENDS, SATURATION, TNTTIMER, SMOOTH, FULLTAB, ITEMCOLOR);
+                KEYBINDS, TARGET, FRIENDS, SATURATION, TNTTIMER, SMOOTH, FULLTAB, ITEMCOLOR, SCOREBOARD, SMOOTHCHAT, FRIENDMARKERS);
         cat("Helper", AUTOSPRINT, PEARL, ELYTRASWAP, ITEMSWAP, NOJUMPDELAY, AUTOCOMMAND, SLOTLOCK,
                 FRIENDSAVE, ANTISPAM);
         cat("Visuals", SCREENTINT, HURTFLASH, TRAILS, JUMPCIRCLE, WORLDPARTICLES, PEARLPARTICLES,
                 HITPARTICLES, TARGETESP, GAMMA, TIMECHANGER, HITBOXES, ZOOM, FOV, CROSSHAIR,
-                REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, FREELOOK, CHINAHAT);
-        cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME);
+                REMOVALS, NOFLUID, BLOCKVIEW, STRETCH, VIEWMODEL, SEEOWNNAME, DAMAGENUMBERS, KILLEFFECTS, FREELOOK, CHINAHAT, CUSTOMFOG, SKYCOLOR, BABYLOL, HITBUBBLES);
+        cat("Other", COLDTAG, MENTION, DEATHCORDS, HITSOUNDS, NAMEPROTECT, CHATTIME, SOUNDS);
     }
 
     public static List<Module> all() { return MODULES; }

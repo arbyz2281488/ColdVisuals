@@ -53,6 +53,7 @@ public class Hooks {
 
     private static Text onChat(Text message) {
         MinecraftClient mc = MinecraftClient.getInstance();
+        ModuleManager.SMOOTHCHAT.onMessage();
         Text result = message;
 
         NameMentionModule mention = ModuleManager.MENTION;
@@ -86,5 +87,6 @@ public class Hooks {
         ModuleManager.HITSOUNDS.play();
         ModuleManager.HITPARTICLES.spawn(target);
         ModuleManager.TARGETESP.setTarget(target);
+        ModuleManager.HITBUBBLES.spawn(target);
     }
 }
