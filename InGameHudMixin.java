@@ -23,8 +23,13 @@ public class InGameHudMixin {
         ci.cancel();
     }
 
-    /** Scoreboard: hide the vanilla sidebar, our module draws a restyled one in its place. */
-    @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true, require = 0)
+    /**
+     * Scoreboard: hide the vanilla sidebar, our module draws a restyled one in its place.
+     * The full descriptor is required: InGameHud has two methods with this name
+     * (one takes a RenderTickCounter, one takes the objective).
+     */
+    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",
+            at = @At("HEAD"), cancellable = true, require = 0)
     private void visuals$scoreboard(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
         ScoreboardHudModule m = ModuleManager.SCOREBOARD;
         if (!m.enabled) return;
