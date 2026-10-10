@@ -27,6 +27,7 @@ public class VisualsClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> ModuleManager.SLOTLOCK.beforeInput(client));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            WindowIcon.apply(client);
             while (openGuiKey.wasPressed()) {
                 client.setScreen(new ClickGuiScreen());
             }

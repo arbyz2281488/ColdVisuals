@@ -1,5 +1,6 @@
 package com.example.visuals;
 
+import com.example.visuals.gui.AccountManagerScreen;
 import com.example.visuals.gui.ClickGuiScreen;
 import com.example.visuals.gui.MenuBackground;
 import com.example.visuals.modules.ChatTimeModule;
@@ -7,16 +8,18 @@ import com.example.visuals.modules.ModuleManager;
 import com.example.visuals.modules.NameMentionModule;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.Text;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 
@@ -32,6 +35,10 @@ public class Hooks {
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> overlay ? message : onChat(message));
 
         ScreenEvents.AFTER_INIT.register((client, screen, w, h) -> {
+            if (screen instanceof TitleScreen) {
+                Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("Аккаунты"),
+                        b -> client.setScreen(new AccountManagerScreen(screen))).dimensions(8, h - 34, 96, 20).build());
+            }
             if (screen instanceof TitleScreen && MenuBackground.firstTime(screen)) {
                 ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> MenuBackground.drawBrand(ctx, s.width, s.height));
             }
