@@ -31,10 +31,10 @@ import java.util.Set;
  */
 public class ClickGuiScreen extends Screen {
     private static final String[] TABS = {"Interface", "Helper", "Visuals", "Other", "Friends"};
-    private static final int[] TAB_COLORS = {0xFFB06CFF, 0xFF6C9CFF, 0xFFFF7AC6, 0xFF9AA0B8, 0xFF66E08A};
+    private static final int[] TAB_COLORS = {0xFF6CC8FF, 0xFF6C9CFF, 0xFFFF7AC6, 0xFF9AA0B8, 0xFF66E08A};
     private static final String FRIENDS = "Friends";
 
-    private static final int ACCENT = 0xFFB06CFF;
+    private int acc = 0xFF6CC8FF;
     private static final int PANEL = 0xFF1A1A27;
     private static final int PANEL_ON = 0xFF241E38;
     private static final int TEXT = 0xFFFFFFFF;
@@ -76,6 +76,7 @@ public class ClickGuiScreen extends Screen {
     // ------------------------------------------------------------------ geometry & layout
 
     private void computeGeometry() {
+        acc = ModuleManager.THEME.accent();
         ww = Math.min(width - 20, 440);
         wh = Math.min(height - 20, 280);
         wx = (width - ww) / 2;
@@ -197,6 +198,10 @@ public class ClickGuiScreen extends Screen {
         contentHeight = y;
     }
 
+    private static int withA(int color, int a) {
+        return (a << 24) | (color & 0xFFFFFF);
+    }
+
     private static boolean inside(double mx, double my, int x, int y, int w, int h) {
         return mx >= x && mx < x + w && my >= y && my < y + h;
     }
@@ -249,6 +254,11 @@ public class ClickGuiScreen extends Screen {
         RenderUtil.roundedRect(ctx, x, y, w, h, r, fade(color));
     }
 
+    private void rg(DrawContext ctx, int x, int y, int w, int h, int r, int top, int bottom) {
+        if (w <= 0 || h <= 0) return;
+        RenderUtil.roundedGradient(ctx, x, y, w, h, r, fade(top), fade(bottom));
+    }
+
     private void text(DrawContext ctx, String s, int x, int y, int color) {
         ctx.drawTextWithShadow(textRenderer, s, x, y, fade(color));
     }
@@ -269,7 +279,7 @@ public class ClickGuiScreen extends Screen {
     }
 
     private void drawSwitch(DrawContext ctx, int x, int y, float anim) {
-        rr(ctx, x, y, 22, 10, 5, lerp(0xFF3A3A4E, ACCENT, anim));
+        rr(ctx, x, y, 22, 10, 5, lerp(0xFF3A3A4E, acc, anim));
         rr(ctx, x + 1 + Math.round(anim * 12), y + 1, 8, 8, 4, 0xFFFFFFFF);
     }
 
@@ -289,25 +299,26 @@ public class ClickGuiScreen extends Screen {
         }
 
         ctx.fill(0, 0, width, height, fade(0x88000000));
+        MenuBackground.drawSnow(ctx, width, height, 0.55f * alpha);
 
         for (Module m : ModuleManager.all()) {
             if (m.enabled && m.movable && m.boxW > 0) {
-                ctx.drawBorder(m.boxX - 2, m.boxY - 2, m.boxW + 4, m.boxH + 4, ACCENT);
+                ctx.drawBorder(m.boxX - 2, m.boxY - 2, m.boxW + 4, m.boxH + 4, acc);
             }
         }
 
         // window with soft shadow and glowing edge
         rr(ctx, wx - 6, wy - 6, ww + 12, wh + 12, 13, 0x16000000);
         rr(ctx, wx - 3, wy - 3, ww + 6, wh + 6, 11, 0x24000000);
-        rr(ctx, wx - 1, wy - 1, ww + 2, wh + 2, 9, 0x60B06CFF);
-        rr(ctx, wx, wy, ww, wh, 8, 0xF0121220);
+        rr(ctx, wx - 1, wy - 1, ww + 2, wh + 2, 9, withA(acc, 0x60));
+        rg(ctx, wx, wy, ww, wh, 8, 0xF2182640, 0xF20B111E);
         // sidebar
         rr(ctx, wx, wy, SIDE, wh, 8, 0xF40C0C16);
         ctx.fill(wx + SIDE - 8, wy, wx + SIDE, wy + wh, fade(0xF40C0C16));
         ctx.fill(wx + SIDE, wy + 8, wx + SIDE + 1, wy + wh - 8, fade(0x30FFFFFF));
 
         textScaled(ctx, "Cold", wx + 13, wy + 11, 0xFF5C7CFF, 1.6f);
-        textScaled(ctx, "Cold", wx + 12, wy + 10, ACCENT, 1.6f);
+        textScaled(ctx, "Cold", wx + 12, wy + 10, acc, 1.6f);
         text(ctx, "visuals beta", wx + 12, wy + 28, TEXT_DIM);
 
         for (int i = 0; i < TABS.length; i++) {
@@ -315,7 +326,7 @@ public class ClickGuiScreen extends Screen {
             boolean sel = TABS[i].equals(category) && query.isEmpty();
             boolean hover = inside(mouseX, mouseY, wx + 6, y, SIDE - 12, 20);
             if (sel) {
-                rr(ctx, wx + 6, y, SIDE - 12, 20, 6, 0x48B06CFF);
+                rr(ctx, wx + 6, y, SIDE - 12, 20, 6, withA(acc, 0x48));
                 rr(ctx, wx + 6, y + 4, 2, 12, 1, TAB_COLORS[i]);
             } else if (hover) {
                 rr(ctx, wx + 6, y, SIDE - 12, 20, 6, 0x20FFFFFF);
@@ -336,7 +347,7 @@ public class ClickGuiScreen extends Screen {
                 }
             }
             String cnt = TABS[i].equals(FRIENDS) ? String.valueOf(total) : on + "/" + total;
-            text(ctx, cnt, wx + SIDE - 12 - textRenderer.getWidth(cnt), y + 6, sel ? 0xFFD9C2FF : 0xFF5F5F78);
+            text(ctx, cnt, wx + SIDE - 12 - textRenderer.getWidth(cnt), y + 6, sel ? lerp(acc, 0xFFFFFFFF, 0.55f) : 0xFF5F5F78);
         }
 
         // header
@@ -354,7 +365,7 @@ public class ClickGuiScreen extends Screen {
         }
         if (settingsOf == null && !friendsTab()) {
             int sx = wx + ww - 128, sy = wy + 10;
-            rr(ctx, sx - 1, sy - 1, 118, 18, 6, searchFocused ? 0xFFB06CFF : 0x30FFFFFF);
+            rr(ctx, sx - 1, sy - 1, 118, 18, 6, searchFocused ? withA(acc, 0xFF) : 0x30FFFFFF);
             rr(ctx, sx, sy, 116, 16, 5, 0xFF191926);
             boolean empty = query.isEmpty() && !searchFocused;
             String shown = empty ? "Поиск..." : query + (searchFocused && (System.currentTimeMillis() / 500) % 2 == 0 ? "_" : "");
@@ -402,18 +413,18 @@ public class ClickGuiScreen extends Screen {
                 }
                 case INPUT -> {
                     int bw = it.w() - 64;
-                    rr(ctx, ix - 1, iy - 1, bw + 2, it.h() + 2, 6, friendFocused ? 0xFFB06CFF : 0x30FFFFFF);
+                    rr(ctx, ix - 1, iy - 1, bw + 2, it.h() + 2, 6, friendFocused ? withA(acc, 0xFF) : 0x30FFFFFF);
                     rr(ctx, ix, iy, bw, it.h(), 5, 0xFF191926);
                     boolean empty = friendInput.isEmpty() && !friendFocused;
                     String shown = empty ? "Ник друга..." : friendInput
                             + (friendFocused && (System.currentTimeMillis() / 500) % 2 == 0 ? "_" : "");
                     text(ctx, shown, ix + 7, iy + 7, empty ? 0xFF5F5F78 : TEXT);
                     boolean hb = hover && mouseX >= ix + it.w() - 58;
-                    rr(ctx, ix + it.w() - 58, iy, 58, it.h(), 5, hb ? 0xFFC58BFF : ACCENT);
+                    rr(ctx, ix + it.w() - 58, iy, 58, it.h(), 5, hb ? 0xFFC58BFF : acc);
                     text(ctx, "Добавить", ix + it.w() - 58 + (58 - textRenderer.getWidth("Добавить")) / 2, iy + 7, 0xFF16101F);
                 }
                 case SECTION -> {
-                    text(ctx, it.label(), ix + 2, iy + 3, 0xFFB9A3E8);
+                    text(ctx, it.label(), ix + 2, iy + 3, lerp(acc, 0xFFFFFFFF, 0.4f));
                     ctx.fill(ix + textRenderer.getWidth(it.label()) + 8, iy + 7, ix + it.w(), iy + 8, fade(0x25FFFFFF));
                 }
                 case HINT -> text(ctx, trim(it.label(), it.w()), ix + 2, iy + 3, 0xFF6C6C86);
@@ -434,8 +445,8 @@ public class ClickGuiScreen extends Screen {
                     text(ctx, it.label(), ix + 20, iy + 7, TEXT);
                     String add = "+ в друзья";
                     int aw = textRenderer.getWidth(add) + 12;
-                    rr(ctx, ix + it.w() - aw - 6, iy + 3, aw, 16, 5, hover ? ACCENT : 0xFF2E2848);
-                    text(ctx, add, ix + it.w() - aw, iy + 7, hover ? 0xFF16101F : 0xFFD9C2FF);
+                    rr(ctx, ix + it.w() - aw - 6, iy + 3, aw, 16, 5, hover ? acc : 0xFF2E2848);
+                    text(ctx, add, ix + it.w() - aw, iy + 7, hover ? 0xFF16101F : lerp(acc, 0xFFFFFFFF, 0.55f));
                 }
             }
         }
@@ -447,7 +458,7 @@ public class ClickGuiScreen extends Screen {
             int barH = Math.max(16, trackH * ch / contentHeight);
             int barY = cy + 2 + (trackH - barH) * scroll / Math.max(1, contentHeight - ch);
             rr(ctx, cx + cw + 4, cy + 2, 2, trackH, 1, 0x20FFFFFF);
-            rr(ctx, cx + cw + 4, barY, 2, barH, 1, 0xB0B06CFF);
+            rr(ctx, cx + cw + 4, barY, 2, barH, 1, withA(acc, 0xB0));
         }
 
         // footer
@@ -471,8 +482,8 @@ public class ClickGuiScreen extends Screen {
 
         int base = lerp(PANEL, PANEL_ON, m.anim);
         base = lerp(base, 0xFFFFFFFF, 0.08f * h);
-        rr(ctx, ix, iy, it.w(), it.h(), 6, base);
-        if (m.anim > 0.05f) rr(ctx, ix, iy + 6, 2, it.h() - 12, 1, ACCENT);
+        rg(ctx, ix, iy, it.w(), it.h(), 6, lerp(base, 0xFFFFFFFF, 0.06f), base);
+        if (m.anim > 0.05f) rr(ctx, ix, iy + 6, 2, it.h() - 12, 1, acc);
 
         text(ctx, trim(m.name, it.w() - 62), ix + 9, iy + 5, lerp(0xFFC8C8D8, TEXT, m.anim));
         text(ctx, trim(m.description, it.w() - 62), ix + 9, iy + 17, TEXT_DIM);
@@ -496,7 +507,7 @@ public class ClickGuiScreen extends Screen {
         double frac = (s.value - s.min) / (s.max - s.min);
         int fill = Math.max(4, (int) (tw * frac));
         rr(ctx, tx, ty, tw, 4, 2, 0xFF2C2C42);
-        rr(ctx, tx, ty, fill, 4, 2, ACCENT);
+        rr(ctx, tx, ty, fill, 4, 2, acc);
         rr(ctx, tx + fill - 4, ty - 2, 8, 8, 4, 0xFFFFFFFF);
     }
 

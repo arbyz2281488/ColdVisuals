@@ -77,7 +77,7 @@ public class AccountManagerScreen extends Screen {
         int wx = (width - ww) / 2, wy = (height - wh) / 2;
 
         RenderUtil.roundedRect(ctx, wx - 1, wy - 1, ww + 2, wh + 2, 9, 0x606CC8FF);
-        RenderUtil.roundedRect(ctx, wx, wy, ww, wh, 8, 0xF0101828);
+        RenderUtil.roundedGradient(ctx, wx, wy, ww, wh, 8, 0xF21A2A48, 0xF20A101E);
 
         ctx.drawTextWithShadow(textRenderer, "Аккаунты", wx + 12, wy + 10, ICE);
         String cur = "Сейчас: " + AccountManager.current();

@@ -79,6 +79,23 @@ public class MenuBackground {
             int dw = Math.round(texW * scale), dh = Math.round(texH * scale);
             int x = (w - dw) / 2;
             int y = (h - dh) / 2 + (int) (Math.sin(t * 0.5) * 4);
+            if (m.parallax.asBool()) {
+                MinecraftClient mcc = MinecraftClient.getInstance();
+                if (mcc.getWindow() != null && mcc.mouse != null && mcc.getWindow().getWidth() > 0) {
+                    double nx = mcc.mouse.getX() / mcc.getWindow().getWidth() - 0.5;
+                    double ny = mcc.mouse.getY() / mcc.getWindow().getHeight() - 0.5;
+                    x -= (int) (nx * 18);
+                    y -= (int) (ny * 12);
+                }
+            }
+            // soft ice-blue glow behind the logo
+            int gcx = x + dw / 2, gcy = y + dh / 2;
+            float pulse = 0.85f + 0.15f * (float) Math.sin(t * 1.1);
+            for (int i = 0; i < 7; i++) {
+                int rad = (int) (dh * (0.16f + i * 0.045f));
+                int ga = (int) ((3 + (6 - i) * 1.4f) * pulse);
+                RenderUtil.roundedRect(ctx, gcx - rad, gcy - rad, rad * 2, rad * 2, rad, (ga << 24) | 0x4AA8E8);
+            }
             ctx.drawTexture(RenderLayer::getGuiTextured, ID, x, y, 0f, 0f, dw, dh, texW, texH, texW, texH);
 
             int dim = (int) ((100 - m.logo.value) / 100.0 * 255);
@@ -88,19 +105,24 @@ public class MenuBackground {
         int dark = (int) (m.darken.value / 100.0 * 200);
         if (dark > 0) ctx.fillGradient(0, 0, w, h, (dark / 2 << 24) | 0x00040C, (dark << 24) | 0x00040C);
 
-        if (m.snow.asBool()) {
-            for (int i = 0; i < FLAKES; i++) {
-                float yy = ((FY[i] * h + (float) t * SPEED[i] * h * 0.06f) % (h + 8)) - 4;
-                float xx = ((FX[i] * w + (float) Math.sin(t * 0.8 + PHASE[i]) * 10f) % w + w) % w;
-                int px = (int) xx, py = (int) yy, s = SIZE[i];
-                ctx.fill(px, py, px + s, py + s, (ALPHA[i] << 24) | 0xDCEBFF);
-            }
-        }
+        if (m.snow.asBool()) drawSnow(ctx, w, h, 1f);
 
         // soft vignette
         int edge = h / 5;
         ctx.fillGradient(0, 0, w, edge, 0x66000000, 0x00000000);
         ctx.fillGradient(0, h - edge, w, h, 0x00000000, 0x77000000);
+    }
+
+    /** Falling snow (also used behind the Cold GUI). intensity 0..1 scales brightness. */
+    public static void drawSnow(DrawContext ctx, int w, int h, float intensity) {
+        double t = System.currentTimeMillis() / 1000.0;
+        for (int i = 0; i < FLAKES; i++) {
+            float yy = ((FY[i] * h + (float) t * SPEED[i] * h * 0.06f) % (h + 8)) - 4;
+            float xx = ((FX[i] * w + (float) Math.sin(t * 0.8 + PHASE[i]) * 10f) % w + w) % w;
+            int px = (int) xx, py = (int) yy, s = SIZE[i];
+            int a = (int) (ALPHA[i] * intensity);
+            ctx.fill(px, py, px + s, py + s, (a << 24) | 0xDCEBFF);
+        }
     }
 
     /** Cold branding in the corners of the title screen. */
@@ -109,8 +131,8 @@ public class MenuBackground {
         TextRenderer tr = MinecraftClient.getInstance().textRenderer;
 
         // top-left logo
-        RenderUtil.roundedRect(ctx, 8, 8, 112, 50, 8, 0x80101828);
-        RenderUtil.roundedRect(ctx, 8, 8, 3, 50, 1, 0xFF6CC8FF);
+        RenderUtil.roundedGradient(ctx, 8, 8, 112, 50, 8, 0xA01C3050, 0xA00C1424);
+        RenderUtil.roundedRect(ctx, 8, 8, 3, 50, 1, ModuleManager.THEME.accent());
         MatrixStack m = ctx.getMatrices();
         m.push();
         m.translate(18f, 13f, 0f);
