@@ -47,6 +47,7 @@ public class Hooks {
             if (screen instanceof HandledScreen<?>) {
                 ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.ITEMCOLOR.render(s, ctx));
             }
+            ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.BUTTONSTYLE.draw(ctx, s, mx, my));
             ScreenEvents.beforeRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.begin(ctx, s));
             ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.end(ctx));
         });

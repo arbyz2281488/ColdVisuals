@@ -1,6 +1,7 @@
 package com.example.visuals.gui;
 
 import com.example.visuals.AccountManager;
+import com.example.visuals.ErrorLog;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -56,6 +57,17 @@ public class AccountManagerScreen extends Screen {
 
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
+        try {
+            draw(ctx, mouseX, mouseY);
+        } catch (Throwable t) {
+            ErrorLog.write("AccountManagerScreen.render", t);
+            ctx.fill(0, 0, width, height, 0xFF101828);
+            ctx.drawTextWithShadow(textRenderer, "Ошибка: " + t, 12, 12, 0xFFFF6B6B);
+            ctx.drawTextWithShadow(textRenderer, "Подробности в файле config/visuals-error.log. Esc - назад.", 12, 28, 0xFFCCCCCC);
+        }
+    }
+
+    private void draw(DrawContext ctx, int mouseX, int mouseY) {
         hits.clear();
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.world == null) MenuBackground.drawBackground(ctx, width, height);
@@ -139,6 +151,16 @@ public class AccountManagerScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
+        try {
+            return handleClick(mx, my, button);
+        } catch (Throwable t) {
+            ErrorLog.write("AccountManagerScreen.click", t);
+            flash("Ошибка: " + t.getClass().getSimpleName() + " (см. config/visuals-error.log)");
+            return true;
+        }
+    }
+
+    private boolean handleClick(double mx, double my, int button) {
         focused = false;
         for (int i = hits.size() - 1; i >= 0; i--) {
             Hit h = hits.get(i);

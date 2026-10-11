@@ -18,7 +18,9 @@
     "ClientWorldMixin",
     "ChatHudMixin",
     "ScreenBackgroundMixin",
-    "TitleScreenBackgroundMixin"
+    "TitleScreenBackgroundMixin",
+    "PressableWidgetMixin",
+    "MinecraftClientAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
