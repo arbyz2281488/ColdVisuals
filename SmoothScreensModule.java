@@ -23,7 +23,7 @@ public class SmoothScreensModule extends Module {
     }
 
     public void begin(DrawContext ctx, Screen s) {
-        pushed = false;
+        if (pushed) return; // a duplicate handler in the same frame
         if (!enabled) return;
         Long t0 = opened.get(s);
         if (t0 == null) return;

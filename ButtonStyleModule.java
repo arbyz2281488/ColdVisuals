@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.PressableTextWidget;
+import net.minecraft.client.gui.widget.TextIconButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -47,7 +48,8 @@ public class ButtonStyleModule extends Module {
         for (ClickableWidget w : Screens.getButtons(screen)) {
             if (!w.visible) continue;
             if (!(w instanceof ButtonWidget || w instanceof CyclingButtonWidget<?>)) continue;
-            if (w instanceof TexturedButtonWidget || w instanceof PressableTextWidget) continue;
+            if (w instanceof TexturedButtonWidget || w instanceof PressableTextWidget || w instanceof TextIconButtonWidget) continue;
+            if (w.getWidth() <= 24) continue; // small square buttons are icon buttons
             Text msg = w.getMessage();
             if (msg == null || msg.getString().isEmpty()) continue;
 
@@ -62,8 +64,8 @@ public class ButtonStyleModule extends Module {
             RenderUtil.roundedGradient(ctx, x - 1, y - 1, bw + 2, bh + 2, 6, edgeTop, edgeBottom);
 
             // body: lighter at the top, darker at the bottom
-            int top = active ? RenderUtil.mix(0xFA1C3A66, 0xFA2E5A96, k) : 0xFA2A323E;
-            int bottom = active ? RenderUtil.mix(0xFA0C1830, 0xFA183462, k) : 0xFA1C222C;
+            int top = active ? RenderUtil.mix(0xFF1C3A66, 0xFF2E5A96, k) : 0xFF2A323E;
+            int bottom = active ? RenderUtil.mix(0xFF0C1830, 0xFF183462, k) : 0xFF1C222C;
             RenderUtil.roundedGradient(ctx, x, y, bw, bh, 5, top, bottom);
             if (active) ctx.fill(x + 5, y + 1, x + bw - 5, y + 2, 0x30FFFFFF); // soft highlight line
 

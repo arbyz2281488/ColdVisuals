@@ -4,6 +4,8 @@ package com.example.visuals.modules;
 public class MenuStyleModule extends Module {
     public final Setting snow = add(Setting.bool("Snow", true));
     public final Setting parallax = add(Setting.bool("Parallax", true));
+    /** Decode splash lines that show as "\\u0430..." text (needs a game restart). */
+    public final Setting fixSplash = add(Setting.bool("Fix Broken Splash", true));
     public final Setting logo = add(Setting.number("Logo Opacity %", 55, 15, 100));
     public final Setting darken = add(Setting.number("Darken %", 30, 0, 80));
     /** Replace the window / taskbar icon with the ice "C" (takes effect on the next game start). */

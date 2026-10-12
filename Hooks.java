@@ -2,6 +2,8 @@ package com.example.visuals;
 
 import com.example.visuals.gui.AccountManagerScreen;
 import com.example.visuals.gui.ClickGuiScreen;
+import com.example.visuals.gui.FrameGuard;
+import com.example.visuals.gui.ModBrowserScreen;
 import com.example.visuals.gui.MenuBackground;
 import com.example.visuals.modules.ChatTimeModule;
 import com.example.visuals.modules.ModuleManager;
@@ -38,16 +40,28 @@ public class Hooks {
             if (screen instanceof TitleScreen) {
                 Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("Аккаунты"),
                         b -> client.setScreen(new AccountManagerScreen(screen))).dimensions(8, h - 34, 96, 20).build());
-            }
-            if (screen instanceof TitleScreen && MenuBackground.firstTime(screen)) {
-                ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> MenuBackground.drawBrand(ctx, s.width, s.height));
+                Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("Моды"),
+                        b -> client.setScreen(new ModBrowserScreen(screen))).dimensions(108, h - 34, 96, 20).build());
             }
             if (screen instanceof ClickGuiScreen || screen instanceof ChatScreen) return;
-            if (!ModuleManager.SMOOTH.opened(screen)) return; // already hooked (screen was just resized)
-            if (screen instanceof HandledScreen<?>) {
-                ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.ITEMCOLOR.render(s, ctx));
+            ModuleManager.SMOOTH.opened(screen); // remember when this screen first appeared
+
+            // Registered on every (re)initialisation: a screen can lose its events when it is rebuilt
+            // (window resized, coming back from another menu). FrameGuard stops a handler that ended up
+            // registered twice from drawing twice in one frame.
+            if (screen instanceof TitleScreen) {
+                ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> {
+                    if (FrameGuard.once(s, "brand")) MenuBackground.drawBrand(ctx, s.width, s.height);
+                });
             }
-            ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.BUTTONSTYLE.draw(ctx, s, mx, my));
+            if (screen instanceof HandledScreen<?>) {
+                ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> {
+                    if (FrameGuard.once(s, "itemcolor")) ModuleManager.ITEMCOLOR.render(s, ctx);
+                });
+            }
+            ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> {
+                if (FrameGuard.once(s, "buttons")) ModuleManager.BUTTONSTYLE.draw(ctx, s, mx, my);
+            });
             ScreenEvents.beforeRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.begin(ctx, s));
             ScreenEvents.afterRender(screen).register((s, ctx, mx, my, td) -> ModuleManager.SMOOTH.end(ctx));
         });
