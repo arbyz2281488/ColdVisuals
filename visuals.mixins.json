@@ -20,7 +20,8 @@
     "ScreenBackgroundMixin",
     "TitleScreenBackgroundMixin",
     "PressableWidgetMixin",
-    "MinecraftClientAccessor"
+    "MinecraftClientAccessor",
+    "SplashTextRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
