@@ -4,6 +4,7 @@ import com.example.visuals.gui.AccountManagerScreen;
 import com.example.visuals.gui.ClickGuiScreen;
 import com.example.visuals.gui.FrameGuard;
 import com.example.visuals.gui.ModBrowserScreen;
+import com.example.visuals.gui.ModelsScreen;
 import com.example.visuals.gui.MenuBackground;
 import com.example.visuals.modules.ChatTimeModule;
 import com.example.visuals.modules.ModuleManager;
@@ -42,6 +43,8 @@ public class Hooks {
                         b -> client.setScreen(new AccountManagerScreen(screen))).dimensions(8, h - 34, 96, 20).build());
                 Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("Моды"),
                         b -> client.setScreen(new ModBrowserScreen(screen))).dimensions(108, h - 34, 96, 20).build());
+                Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("Модели"),
+                        b -> client.setScreen(new ModelsScreen(screen))).dimensions(208, h - 34, 96, 20).build());
             }
             if (screen instanceof ClickGuiScreen || screen instanceof ChatScreen) return;
             ModuleManager.SMOOTH.opened(screen); // remember when this screen first appeared

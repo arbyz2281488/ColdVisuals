@@ -1,5 +1,6 @@
 package com.example.visuals;
 
+import com.example.visuals.gui.ModelsScreen;
 import com.example.visuals.modules.Module;
 import com.example.visuals.modules.ModuleManager;
 import net.minecraft.client.MinecraftClient;
@@ -47,6 +48,11 @@ public class CommandHandler {
         }
         if (cmd.equals(".autocmd")) {
             autocmd(a);
+            return true;
+        }
+        if (cmd.equals(".models")) {
+            MinecraftClient mc = MinecraftClient.getInstance();
+            mc.execute(() -> mc.setScreen(new ModelsScreen(null)));
             return true;
         }
         if (cmd.equals(".cold")) {

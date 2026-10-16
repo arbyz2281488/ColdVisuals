@@ -1,5 +1,6 @@
 package com.example.visuals.mixin;
 
+import com.example.visuals.ShoulderRenderer;
 import com.example.visuals.modules.BabyLolModule;
 import com.example.visuals.modules.ModuleManager;
 import net.minecraft.client.MinecraftClient;
@@ -48,5 +49,13 @@ public class LivingEntityRendererMixin {
             matrices.pop();
             m.pushed--;
         }
+    }
+
+    /** Shoulder: draw the Shrek / golem / sword model on your shoulder after the player has been drawn. */
+    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+            at = @At("RETURN"), require = 0)
+    private void visuals$shoulder(LivingEntityRenderState state, MatrixStack matrices,
+                                  VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        if (state instanceof PlayerEntityRenderState ps) ShoulderRenderer.render(ps, matrices, vertexConsumers, light);
     }
 }
