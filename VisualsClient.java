@@ -28,6 +28,7 @@ public class VisualsClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             WindowIcon.apply(client);
+            ModelPack.ensureDefaults();
             while (openGuiKey.wasPressed()) {
                 client.setScreen(new ClickGuiScreen());
             }
